@@ -1,0 +1,856 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  background: #080b16;
+  color: #f8f8ff;
+}
+
+button,
+a {
+  font-family: inherit;
+}
+
+/* =========================
+   LANDING PAGE
+========================= */
+
+.app {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% 25%, rgba(124, 92, 255, 0.16), transparent 35%),
+    #080b16;
+}
+
+/* NAVBAR */
+
+.navbar {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 7%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 11, 22, 0.8);
+}
+
+.logo {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 4px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-links a {
+  color: #9ca3b7;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+.nav-links a:hover {
+  color: #ffffff;
+}
+
+.login-btn {
+  padding: 10px 22px;
+  border: 1px solid rgba(124, 92, 255, 0.7);
+  border-radius: 8px;
+  background: rgba(124, 92, 255, 0.1);
+  color: #ffffff !important;
+}
+
+/* HERO */
+
+.hero-section {
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.hero-content {
+  max-width: 850px;
+}
+
+.tagline {
+  color: #a99aff;
+  font-size: 12px;
+  letter-spacing: 4px;
+  font-weight: 700;
+  margin-bottom: 25px;
+}
+
+.hero-content h1 {
+  font-size: clamp(52px, 8vw, 82px);
+  line-height: 1;
+  letter-spacing: -4px;
+  margin-bottom: 30px;
+}
+
+.hero-content h1 span {
+  color: #9b8cff;
+}
+
+.description {
+  max-width: 650px;
+  margin: auto;
+  color: #9ca3b7;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+.hero-buttons {
+  margin-top: 38px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.primary-btn,
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 25px;
+  border-radius: 9px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.primary-btn {
+  border: none;
+  background: #7c5cff;
+  color: white;
+}
+
+.primary-btn:hover {
+  background: #8d72ff;
+  transform: translateY(-1px);
+}
+
+.secondary-btn {
+  border: 1px solid #343a52;
+  background: rgba(255, 255, 255, 0.02);
+  color: white;
+}
+
+/* FEATURES */
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.feature {
+  padding: 55px 40px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.015);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.feature:last-child {
+  border-right: none;
+}
+
+.feature h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.feature p {
+  color: #8e95a9;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background:
+    radial-gradient(
+      circle at 50% 30%,
+      rgba(124, 92, 255, 0.18),
+      transparent 40%
+    ),
+    #080b16;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 430px;
+  padding: 45px;
+  background: rgba(17, 22, 40, 0.92);
+  border: 1px solid rgba(155, 140, 255, 0.18);
+  border-radius: 20px;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.45);
+}
+
+.login-card h1 {
+  text-align: center;
+  font-size: 34px;
+  margin-bottom: 10px;
+}
+
+.login-subtitle {
+  text-align: center;
+  color: #9299ad;
+  margin-bottom: 32px;
+}
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login-card label {
+  margin-bottom: 8px;
+  color: #d5d8e5;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 14px 15px;
+  margin-bottom: 20px;
+  border: 1px solid #343b54;
+  border-radius: 9px;
+  background: #0a0e1b;
+  color: white;
+  outline: none;
+}
+
+.login-card input:focus {
+  border-color: #7c5cff;
+  box-shadow: 0 0 0 3px rgba(124, 92, 255, 0.12);
+}
+
+.login-card input::placeholder {
+  color: #60677c;
+}
+
+.login-card .primary-btn {
+  width: 100%;
+  margin-top: 7px;
+}
+
+.login-error {
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #ff8b8b;
+  text-align: center;
+  font-size: 14px;
+}
+
+.register-text {
+  text-align: center;
+  margin-top: 25px;
+  color: #858ca0;
+  font-size: 13px;
+}
+
+.register-text span {
+  color: #a99aff;
+  font-weight: 600;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(124, 92, 255, 0.12), transparent 30%),
+    #080b16;
+}
+
+.dashboard-header {
+  padding: 42px 7% 35px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.dashboard-header h1 {
+  font-size: 34px;
+  margin-bottom: 7px;
+}
+
+.dashboard-header h2 {
+  color: #9b8cff;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.dashboard-header p {
+  color: #777f95;
+  font-size: 13px;
+}
+
+.elections-section {
+  padding: 42px 7%;
+}
+
+.elections-section > h2 {
+  font-size: 25px;
+  margin-bottom: 25px;
+}
+
+.elections-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 20px;
+}
+
+.election-card {
+  padding: 27px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(17, 22, 40, 0.8);
+  transition: 0.25s;
+}
+
+.election-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(124, 92, 255, 0.5);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25);
+}
+
+.election-card h3 {
+  font-size: 19px;
+  margin-bottom: 12px;
+}
+
+.election-card p {
+  color: #8e95a9;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.election-card strong {
+  color: #dce0eb;
+}
+
+.election-card .primary-btn {
+  margin-top: 8px;
+}
+
+/* =========================
+   ELECTION DETAILS
+========================= */
+
+.election-details {
+  min-height: 100vh;
+  padding: 55px 7%;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(124, 92, 255, 0.13), transparent 35%),
+    #080b16;
+}
+
+.election-details > h1 {
+  font-size: 14px;
+  color: #a99aff;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 15px;
+}
+
+.election-details > h2 {
+  font-size: 38px;
+  margin-bottom: 12px;
+}
+
+.election-details > p {
+  color: #8e95a9;
+  margin-bottom: 40px;
+}
+
+.election-details section > h2 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.candidate-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 25px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(17, 22, 40, 0.85);
+}
+
+.candidate-card h3 {
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.candidate-card p {
+  color: #8e95a9;
+  font-size: 13px;
+  margin: 3px 0;
+}
+
+.candidate-card .primary-btn {
+  white-space: nowrap;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 5%;
+  }
+
+  .nav-links {
+    gap: 10px;
+  }
+
+  .nav-links a:not(.login-btn) {
+    display: none;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+
+  .feature {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .login-card {
+    padding: 32px 24px;
+  }
+
+  .dashboard-header,
+  .elections-section,
+  .election-details {
+    padding-left: 5%;
+    padding-right: 5%;
+  }
+
+  .candidate-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+/* =========================
+   ELECTION DETAILS - NEW
+========================= */
+
+.back-link {
+  display: inline-block;
+  color: #9299ad;
+  font-size: 14px;
+  margin-bottom: 35px;
+  transition: 0.2s;
+}
+
+.back-link:hover {
+  color: #ffffff;
+}
+
+.election-hero {
+  max-width: 900px;
+  padding: 38px;
+  border-radius: 20px;
+  border: 1px solid rgba(124, 92, 255, 0.22);
+  background:
+    radial-gradient(
+      circle at 90% 0%,
+      rgba(124, 92, 255, 0.15),
+      transparent 35%
+    ),
+    rgba(17, 22, 40, 0.8);
+  margin-bottom: 55px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 7px 12px;
+  border-radius: 20px;
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.25);
+  color: #6ee7a0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-bottom: 22px;
+}
+
+.election-hero h1 {
+  font-size: clamp(32px, 5vw, 52px);
+  line-height: 1.1;
+  letter-spacing: -1.5px;
+  margin-bottom: 16px;
+}
+
+.election-description {
+  color: #969db1;
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 700px;
+}
+
+.election-meta {
+  display: flex;
+  gap: 50px;
+  margin-top: 32px;
+  padding-top: 25px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.election-meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.election-meta span {
+  color: #686f83;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.election-meta strong {
+  color: #dfe2ec;
+  font-size: 13px;
+}
+
+.candidates-section {
+  max-width: 1000px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 25px;
+}
+
+.section-label {
+  color: #9b8cff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 7px;
+}
+
+.section-heading h2 {
+  font-size: 28px;
+}
+
+.candidate-count {
+  color: #737b91;
+  font-size: 13px;
+}
+
+.candidates-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.candidate-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  background: rgba(17, 22, 40, 0.8);
+  transition: 0.2s;
+}
+
+.candidate-card:hover {
+  border-color: rgba(124, 92, 255, 0.45);
+  transform: translateY(-2px);
+}
+
+.candidate-symbol {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(124, 92, 255, 0.12);
+  border: 1px solid rgba(124, 92, 255, 0.2);
+  color: #a99aff;
+  font-size: 20px;
+}
+
+.candidate-info {
+  flex: 1;
+}
+
+.candidate-info h3 {
+  font-size: 17px;
+  margin-bottom: 5px;
+}
+
+.candidate-info p {
+  color: #858ca0;
+  font-size: 13px;
+}
+
+.vote-select-btn {
+  border: 1px solid rgba(124, 92, 255, 0.6);
+  background: rgba(124, 92, 255, 0.1);
+  color: #b4a8ff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+.vote-select-btn:hover {
+  background: #7c5cff;
+  color: white;
+}
+
+.empty-candidates {
+  text-align: center;
+  padding: 60px 20px;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  color: #7d8498;
+}
+
+.empty-icon {
+  font-size: 30px;
+  color: #8f7fff;
+  margin-bottom: 15px;
+}
+
+.empty-candidates h3 {
+  color: #dfe2ec;
+  margin-bottom: 8px;
+}
+
+.empty-candidates p {
+  font-size: 13px;
+}
+
+@media (max-width: 650px) {
+  .election-hero {
+    padding: 25px;
+  }
+
+  .election-meta {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .candidate-card {
+    flex-wrap: wrap;
+  }
+
+  .vote-select-btn {
+    width: 100%;
+  }
+}
+
+
+/* =========================
+   VOTING FLOW
+========================= */
+
+.candidate-selected {
+  border-color: rgba(124, 92, 255, 0.8);
+  background: rgba(124, 92, 255, 0.08);
+  box-shadow: 0 0 25px rgba(124, 92, 255, 0.08);
+}
+
+.vote-confirmation {
+  max-width: 1000px;
+  margin-top: 30px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  border: 1px solid rgba(124, 92, 255, 0.35);
+  border-radius: 16px;
+  background: rgba(124, 92, 255, 0.07);
+}
+
+.vote-confirmation h3 {
+  font-size: 19px;
+  margin-bottom: 7px;
+}
+
+.vote-confirmation p:not(.section-label) {
+  color: #858ca0;
+  font-size: 13px;
+}
+
+.confirmation-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.cancel-btn,
+.confirm-vote-btn {
+  padding: 11px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cancel-btn {
+  border: 1px solid #3a4056;
+  background: transparent;
+  color: #b8bdcc;
+}
+
+.confirm-vote-btn {
+  border: none;
+  background: #7c5cff;
+  color: white;
+}
+
+.confirm-vote-btn:hover {
+  background: #8d72ff;
+}
+
+.confirm-vote-btn:disabled,
+.cancel-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* SUCCESS SCREEN */
+
+.vote-success-card {
+  max-width: 700px;
+  margin: 70px auto;
+  padding: 45px;
+  text-align: center;
+  border: 1px solid rgba(74, 222, 128, 0.2);
+  border-radius: 20px;
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(74, 222, 128, 0.08),
+      transparent 40%
+    ),
+    rgba(17, 22, 40, 0.9);
+}
+
+.success-icon {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  color: #6ee7a0;
+  font-size: 35px;
+  font-weight: 700;
+}
+
+.vote-success-card h1 {
+  font-size: 36px;
+  margin-bottom: 15px;
+}
+
+.vote-success-card > p:not(.section-label) {
+  color: #9299ad;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.vote-info {
+  text-align: left;
+  margin-bottom: 30px;
+  padding: 18px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.vote-info div {
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.vote-info div:last-child {
+  border-bottom: none;
+}
+
+.vote-info span {
+  display: block;
+  color: #656d82;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  margin-bottom: 5px;
+}
+
+.vote-info strong {
+  display: block;
+  color: #cdd1dd;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+@media (max-width: 700px) {
+  .vote-confirmation {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .confirmation-actions {
+    width: 100%;
+  }
+
+  .cancel-btn,
+  .confirm-vote-btn {
+    flex: 1;
+  }
+
+  .vote-success-card {
+    padding: 30px 20px;
+    margin-top: 30px;
+  }
+}
