@@ -2,7 +2,8 @@ const express = require("express");
 
 const { createElection,
         activateElection,
-        getActiveElections
+        getActiveElections,
+        finishElection
  } = require("../controllers/electionController");
 const authMiddleware = require("../middleware/authMiddleware");
 const adminMiddleware = require("../middleware/adminMiddleware");
@@ -29,6 +30,13 @@ router.post(
     authMiddleware,
     adminMiddleware,
     activateElection
+);
+
+router.post(
+    "/finish/:id",
+    authMiddleware,
+    adminMiddleware,
+    finishElection
 );
 
 module.exports = router;

@@ -18,6 +18,14 @@ const candidateSchema = new mongoose.Schema(
             trim: true
         },
 
+       isWithdrawn: {
+
+    type: Boolean,
+
+    default: false
+
+},
+
         election: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Election",

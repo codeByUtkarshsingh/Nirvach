@@ -70,7 +70,8 @@ if (!voter.isEligible) {
         // Check candidate belongs to election
         const candidate = await Candidate.findOne({
             _id: candidateId,
-            election: electionId
+            election: electionId,
+            isWithdrawn: false
         });
 
         if (!candidate) {

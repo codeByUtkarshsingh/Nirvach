@@ -6,6 +6,7 @@ const electionRoutes = require("./routes/electionRoutes");
 const candidateRoutes = require("./routes/candidateRoutes");
 const voteRoutes = require("./routes/voteRoutes");
 const userRoutes = require("./routes/userRoutes");
+const resultsRoutes = require("./routes/resultsRoutes");
 
 const app = express();
 
@@ -49,5 +50,6 @@ app.use("/api/candidates", candidateRoutes);
 // Vote routes
 app.use("/api/votes", voteRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/results", resultsRoutes);
 
 module.exports = app;

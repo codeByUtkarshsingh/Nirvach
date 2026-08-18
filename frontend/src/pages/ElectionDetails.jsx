@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 function ElectionDetails() {
   const { electionId } = useParams()
+  const navigate = useNavigate()
 
   const [election, setElection] = useState(null)
   const [candidates, setCandidates] = useState([])
   const [selectedCandidate, setSelectedCandidate] = useState(null)
 
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
   const [voting, setVoting] = useState(false)
 
-  const [voteSuccess, setVoteSuccess] = useState(null)
-
-  const [verification, setVerification] = useState(null)
-  const [verifying, setVerifying] = useState(false)
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+  const [voteResult, setVoteResult] = useState(null)
 
   useEffect(() => {
     const token = localStorage.getItem('nirvachToken')
@@ -28,7 +27,12 @@ function ElectionDetails() {
 
     const fetchElectionData = async () => {
       try {
-        // Fetch active elections
+        console.log('=================================')
+        console.log('NIRVACH ELECTION')
+        console.log('Election ID:', electionId)
+        console.log('=================================')
+
+        // Get active elections
         const electionResponse = await fetch(
           'http://localhost:3000/api/elections',
           {
@@ -40,26 +44,29 @@ function ElectionDetails() {
 
         const electionData = await electionResponse.json()
 
+        console.log('Election API response:', electionData)
+
         if (!electionData.success) {
           setError(
-            electionData.message || 'Could not load election'
+            electionData.message || 'Could not load elections'
           )
+          setLoading(false)
           return
         }
 
-        // Find the election currently being viewed
-        const selectedElection = electionData.elections.find(
+        const currentElection = electionData.elections.find(
           (item) => item._id === electionId
         )
 
-        if (!selectedElection) {
+        if (!currentElection) {
           setError('Election not found')
+          setLoading(false)
           return
         }
 
-        setElection(selectedElection)
+        setElection(currentElection)
 
-        // Fetch candidates
+        // Get candidates
         const candidateResponse = await fetch(
           `http://localhost:3000/api/candidates/${electionId}`,
           {
@@ -71,17 +78,18 @@ function ElectionDetails() {
 
         const candidateData = await candidateResponse.json()
 
+        console.log('Candidates API response:', candidateData)
+
         if (candidateData.success) {
           setCandidates(candidateData.candidates)
         } else {
           setError(
-            candidateData.message ||
-              'Could not load candidates'
+            candidateData.message || 'Could not load candidates'
           )
         }
 
       } catch (error) {
-        console.error(error)
+        console.error('Frontend error:', error)
         setError('Could not connect to backend')
       } finally {
         setLoading(false)
@@ -91,15 +99,7 @@ function ElectionDetails() {
     fetchElectionData()
   }, [electionId])
 
-  // =========================
-  // CAST VOTE
-  // =========================
-
   const handleVote = async () => {
-    if (!selectedCandidate) {
-      return
-    }
-
     const token = localStorage.getItem('nirvachToken')
 
     if (!token) {
@@ -107,8 +107,27 @@ function ElectionDetails() {
       return
     }
 
+    if (!selectedCandidate) {
+      setError('Please select a candidate first.')
+      return
+    }
+
+    const candidate = candidates.find(
+      (item) => item._id === selectedCandidate
+    )
+
+    console.log('=================================')
+    console.log('NIRVACH VOTE STARTED')
+    console.log('Election:', election?.title)
+    console.log('Election ID:', electionId)
+    console.log('Candidate:', candidate?.name)
+    console.log('Candidate ID:', selectedCandidate)
+    console.log('=================================')
+
     setVoting(true)
     setError('')
+    setMessage('')
+    setVoteResult(null)
 
     try {
       const response = await fetch(
@@ -116,451 +135,298 @@ function ElectionDetails() {
         {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             electionId,
-            candidateId: selectedCandidate._id,
+            candidateId: selectedCandidate,
           }),
         }
       )
 
       const data = await response.json()
 
-      if (!data.success) {
-        setError(
-          data.message || 'Vote could not be cast'
+      console.log('Vote API response:', data)
+
+      if (data.success) {
+        console.log('=================================')
+        console.log('VOTE CAST SUCCESSFULLY')
+        console.log('Vote ID:', data.voteId)
+        console.log(
+          'Transaction Hash:',
+          data.blockchain?.transactionHash
         )
-        return
+        console.log(
+          'Block Number:',
+          data.blockchain?.blockNumber
+        )
+        console.log(
+          'Vote Hash:',
+          data.blockchain?.voteHash
+        )
+        console.log(
+          'Contract Address:',
+          data.blockchain?.contractAddress
+        )
+        console.log('=================================')
+
+        setVoteResult(data)
+
+        setMessage(
+          `Vote successfully recorded for ${candidate?.name}`
+        )
+      } else {
+        console.error('Vote failed:', data)
+        setError(data.message || 'Vote could not be cast')
       }
 
-      setVoteSuccess(data)
-      setSelectedCandidate(null)
-
     } catch (error) {
-      console.error(error)
+      console.error('Vote request failed:', error)
       setError('Could not connect to backend')
     } finally {
       setVoting(false)
     }
   }
 
-  // =========================
-  // VERIFY VOTE
-  // =========================
-
   const handleVerifyVote = async () => {
-    if (!voteSuccess?.voteId) {
+    if (!voteResult?.voteId) {
       return
     }
 
-    setVerifying(true)
-    setVerification(null)
-    setError('')
+    console.log('=================================')
+    console.log('BLOCKCHAIN VERIFICATION STARTED')
+    console.log('Vote ID:', voteResult.voteId)
+    console.log('=================================')
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/votes/verify/${voteSuccess.voteId}`
+        `http://localhost:3000/api/votes/verify/${voteResult.voteId}`
       )
 
       const data = await response.json()
 
-      if (!data.success) {
-        setError(
-          data.message || 'Vote verification failed'
+      console.log('Verification response:', data)
+
+      if (data.success) {
+        console.log('=================================')
+        console.log(
+          'BLOCKCHAIN VERIFIED:',
+          data.verified
         )
-        return
+        console.log(
+          'Blockchain Timestamp:',
+          data.blockchain?.blockchainTimestamp
+        )
+        console.log('=================================')
       }
 
-      setVerification(data)
-
     } catch (error) {
-      console.error(error)
-      setError('Could not verify vote')
-    } finally {
-      setVerifying(false)
+      console.error(
+        'Blockchain verification failed:',
+        error
+      )
     }
   }
 
-  // =========================
-  // LOADING
-  // =========================
-
   if (loading) {
     return (
-      <div className="election-details">
-        <p>Loading election...</p>
+      <div className="election-details-page">
+        <h2>Loading election...</h2>
       </div>
     )
   }
-
-  // =========================
-  // ERROR
-  // =========================
 
   if (error && !election) {
     return (
-      <div className="election-details">
-
+      <div className="election-details-page">
         <h2>{error}</h2>
-
-        <Link
-          to="/dashboard"
-          className="primary-btn"
-        >
-          Back to Dashboard
-        </Link>
-
       </div>
     )
   }
-
-  // =========================
-  // SUCCESS SCREEN
-  // =========================
-
-  if (voteSuccess) {
-    return (
-      <div className="election-details">
-
-        <div className="vote-success-card">
-
-          <div className="success-icon">
-            ✓
-          </div>
-
-          <p className="section-label">
-            VOTE RECORDED
-          </p>
-
-          <h1>
-            Vote Cast Successfully
-          </h1>
-
-          <p>
-            Your vote has been recorded and its
-            integrity has been secured using
-            blockchain verification.
-          </p>
-
-          {/* VOTE INFORMATION */}
-
-          <div className="vote-info">
-
-            <div>
-              <span>
-                VOTE ID
-              </span>
-
-              <strong>
-                {voteSuccess.voteId}
-              </strong>
-            </div>
-
-            <div>
-              <span>
-                TRANSACTION HASH
-              </span>
-
-              <strong>
-                {voteSuccess.blockchain?.transactionHash ||
-                  'Recorded'}
-              </strong>
-            </div>
-
-            <div>
-              <span>
-                BLOCK NUMBER
-              </span>
-
-              <strong>
-                {voteSuccess.blockchain?.blockNumber ||
-                  'Confirmed'}
-              </strong>
-            </div>
-
-          </div>
-
-          {/* BLOCKCHAIN VERIFICATION */}
-
-          <div className="verification-area">
-
-            {!verification && (
-              <button
-                className="verify-btn"
-                onClick={handleVerifyVote}
-                disabled={verifying}
-              >
-                {verifying
-                  ? 'Verifying on Blockchain...'
-                  : 'Verify on Blockchain'}
-              </button>
-            )}
-
-            {verification && (
-              <div className="verification-result">
-
-                <div className="verification-icon">
-                  ✓
-                </div>
-
-                <div>
-                  <span>
-                    BLOCKCHAIN STATUS
-                  </span>
-
-                  <strong>
-                    {verification.verified
-                      ? ' VERIFIED'
-                      : ' NOT VERIFIED'}
-                  </strong>
-                </div>
-
-              </div>
-            )}
-
-            <Link
-              to="/dashboard"
-              className="secondary-dashboard-btn"
-            >
-              Return to Dashboard
-            </Link>
-
-          </div>
-
-        </div>
-
-      </div>
-    )
-  }
-
-  // =========================
-  // ELECTION PAGE
-  // =========================
 
   return (
-    <div className="election-details">
+    <div className="election-details-page">
 
-      <Link
-        to="/dashboard"
-        className="back-link"
-      >
-        ← Back to Dashboard
-      </Link>
+      <div className="election-details-header">
 
-      {/* ELECTION HEADER */}
+        <button
+          className="back-btn"
+          onClick={() => navigate('/dashboard')}
+        >
+          ← Back to Dashboard
+        </button>
 
-      <div className="election-hero">
-
-        <div className="status-badge">
-          ● ACTIVE ELECTION
-        </div>
+        <p className="section-label">
+          NIRVACH ELECTION
+        </p>
 
         <h1>
-          {election.title}
+          {election?.title}
         </h1>
 
         <p className="election-description">
-          {election.description}
+          {election?.description}
         </p>
 
-        <div className="election-meta">
-
-          <div>
-
-            <span>
-              STARTS
-            </span>
-
-            <strong>
-              {new Date(
-                election.startDate
-              ).toLocaleString()}
-            </strong>
-
-          </div>
-
-          <div>
-
-            <span>
-              ENDS
-            </span>
-
-            <strong>
-              {new Date(
-                election.endDate
-              ).toLocaleString()}
-            </strong>
-
-          </div>
-
+        <div className="election-status">
+          <span className="status-dot"></span>
+          Election Active
         </div>
 
       </div>
 
-      {/* CANDIDATES */}
-
-      <section className="candidates-section">
+      <section className="candidate-section">
 
         <div className="section-heading">
-
           <div>
-
             <p className="section-label">
-              YOUR CHOICE
+              CAST YOUR VOTE
             </p>
 
             <h2>
-              Select a Candidate
+              Choose a Candidate
             </h2>
-
           </div>
 
-          <span className="candidate-count">
-            {candidates.length} candidates
-          </span>
+          <p className="candidate-count">
+            {candidates.length} Candidates
+          </p>
+        </div>
+
+        <div className="candidate-grid">
+
+          {candidates.map((candidate) => (
+
+            <div
+              key={candidate._id}
+              className={`candidate-card ${
+                selectedCandidate === candidate._id
+                  ? 'candidate-selected'
+                  : ''
+              }`}
+              onClick={() =>
+                setSelectedCandidate(candidate._id)
+              }
+            >
+
+              <div className="candidate-symbol">
+                {candidate.symbol || '🗳️'}
+              </div>
+
+              <div className="candidate-info">
+
+                <h3>
+                  {candidate.name}
+                </h3>
+
+                <p>
+                  {candidate.party || 'Independent'}
+                </p>
+
+              </div>
+
+              <div className="candidate-radio">
+
+                <span
+                  className={
+                    selectedCandidate === candidate._id
+                      ? 'radio-active'
+                      : ''
+                  }
+                ></span>
+
+              </div>
+
+            </div>
+
+          ))}
 
         </div>
 
-        {error && (
-          <div className="login-error">
-            {error}
-          </div>
-        )}
+        {selectedCandidate && !voteResult && (
 
-        {candidates.length === 0 ? (
-
-          <div className="empty-candidates">
-
-            <div className="empty-icon">
-              ◉
-            </div>
-
-            <h3>
-              No candidates yet
-            </h3>
+          <div className="vote-action">
 
             <p>
-              Candidates for this election
-              have not been added yet.
+              You selected:{' '}
+              <strong>
+                {
+                  candidates.find(
+                    (candidate) =>
+                      candidate._id === selectedCandidate
+                  )?.name
+                }
+              </strong>
             </p>
-
-          </div>
-
-        ) : (
-
-          <div className="candidates-grid">
-
-            {candidates.map((candidate) => {
-
-              const isSelected =
-                selectedCandidate?._id ===
-                candidate._id
-
-              return (
-
-                <div
-                  key={candidate._id}
-                  className={`candidate-card ${
-                    isSelected
-                      ? 'candidate-selected'
-                      : ''
-                  }`}
-                >
-
-                  <div className="candidate-symbol">
-                    {candidate.symbol || '◉'}
-                  </div>
-
-                  <div className="candidate-info">
-
-                    <h3>
-                      {candidate.name}
-                    </h3>
-
-                    <p>
-                      {candidate.party ||
-                        'Independent'}
-                    </p>
-
-                  </div>
-
-                  <button
-                    className="vote-select-btn"
-                    onClick={() =>
-                      setSelectedCandidate(
-                        candidate
-                      )
-                    }
-                  >
-                    {isSelected
-                      ? 'Selected ✓'
-                      : 'Select'}
-                  </button>
-
-                </div>
-
-              )
-            })}
-
-          </div>
-
-        )}
-
-      </section>
-
-      {/* CONFIRMATION */}
-
-      {selectedCandidate && (
-
-        <div className="vote-confirmation">
-
-          <div>
-
-            <p className="section-label">
-              CONFIRM YOUR VOTE
-            </p>
-
-            <h3>
-              You selected{' '}
-              {selectedCandidate.name}
-            </h3>
-
-            <p>
-              Once submitted, your vote will be
-              recorded and cannot be changed.
-            </p>
-
-          </div>
-
-          <div className="confirmation-actions">
 
             <button
-              className="cancel-btn"
-              onClick={() =>
-                setSelectedCandidate(null)
-              }
-              disabled={voting}
-            >
-              Cancel
-            </button>
-
-            <button
-              className="confirm-vote-btn"
+              className="primary-btn vote-btn"
               onClick={handleVote}
               disabled={voting}
             >
               {voting
                 ? 'Recording Vote...'
-                : 'Confirm Vote'}
+                : 'Confirm & Cast Vote'}
             </button>
 
           </div>
 
-        </div>
+        )}
 
-      )}
+        {message && (
+
+          <div className="success-box">
+
+            <h3>✓ Vote Recorded Successfully</h3>
+
+            <p>
+              {message}
+            </p>
+
+            {voteResult?.blockchain && (
+
+              <div className="blockchain-info">
+
+                <p>
+                  <strong>Transaction:</strong>{' '}
+                  {voteResult.blockchain.transactionHash}
+                </p>
+
+                <p>
+                  <strong>Block:</strong>{' '}
+                  {voteResult.blockchain.blockNumber}
+                </p>
+
+                <p>
+                  <strong>Contract:</strong>{' '}
+                  {voteResult.blockchain.contractAddress}
+                </p>
+
+              </div>
+
+            )}
+
+            <button
+              className="secondary-btn verify-btn"
+              onClick={handleVerifyVote}
+            >
+              Verify Vote on Blockchain
+            </button>
+
+          </div>
+
+        )}
+
+        {error && (
+
+          <div className="error-box">
+            {error}
+          </div>
+
+        )}
+
+      </section>
 
     </div>
   )

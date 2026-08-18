@@ -23,10 +23,27 @@ const electionSchema = new mongoose.Schema(
             required: true
         },
 
-        isActive: {
-            type: Boolean,
-            default: false
-        }
+       isActive: {
+    type: Boolean,
+    default: false
+},
+
+isCompleted: {
+    type: Boolean,
+    default: false
+},
+
+winner: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Candidate",
+    default: null
+},
+
+winnerVoteCount: {
+    type: Number,
+    default: 0
+}
+
     },
     {
         timestamps: true

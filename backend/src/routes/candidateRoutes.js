@@ -2,7 +2,8 @@ const express = require("express");
 
 const {
     createCandidate,
-    getCandidatesByElection
+    getCandidatesByElection,
+    withdrawCandidate
 } = require("../controllers/candidateController");
 
 const authMiddleware = require("../middleware/authMiddleware");
@@ -23,6 +24,13 @@ router.post(
     authMiddleware,
     adminMiddleware,
     createCandidate
+);
+
+router.patch(
+    "/:id/withdraw",
+    authMiddleware,
+    adminMiddleware,
+    withdrawCandidate
 );
 
 module.exports = router;

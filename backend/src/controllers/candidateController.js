@@ -58,7 +58,8 @@ const getCandidatesByElection = async (req, res) => {
         }
 
         const candidates = await Candidate.find({
-            election: electionId
+            election: electionId,
+            isWithdrawn: false
         }).sort({
             name: 1
         });
@@ -78,7 +79,49 @@ const getCandidatesByElection = async (req, res) => {
     }
 };
 
+const withdrawCandidate = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const candidate = await Candidate.findById(id);
+
+        if (!candidate) {
+            return res.status(404).json({
+                success: false,
+                message: "Candidate not found"
+            });
+        }
+
+        if (candidate.isWithdrawn) {
+            return res.status(400).json({
+                success: false,
+                message: "Candidate is already withdrawn"
+            });
+        }
+
+        candidate.isWithdrawn = true;
+
+        await candidate.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Candidate withdrawn successfully",
+            candidate
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+};
+
+
 module.exports = {
     createCandidate,
-    getCandidatesByElection
+    getCandidatesByElection,
+    withdrawCandidate
 };
